@@ -33,7 +33,7 @@ document.body.appendChild(pokemonCards);
 let pokemonDetailView = document.createElement("div");
 pokemonDetailView.id = "pokemon-detail-view";
 pokemonDetailView.classList.add("container");
-pokemonDetailView.classList.add("d-none");
+pokemonDetailView.classList.add("hidden");
 document.body.appendChild(pokemonDetailView);
 
 for (const pokemon of pokemons){
@@ -49,8 +49,8 @@ for (const pokemon of pokemons){
 
 // Funktionen
 function displaySinglePokemon(pokemon){
-    pokemonCards.classList.toggle("d-none");
-    pokemonDetailView.classList.toggle("d-none");
+    pokemonCards.classList.toggle("hidden");
+    pokemonDetailView.classList.toggle("hidden");
 
     const card = createPokemonCard(pokemon);
     pokemonDetailView.appendChild(card);
