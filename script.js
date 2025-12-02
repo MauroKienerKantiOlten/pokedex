@@ -84,6 +84,5 @@ title.addEventListener("click", function(){
     if(pokemonCards.classList.contains("hidden")){
         pokemonCards.classList.toggle("hidden");
         pokemonDetailView.classList.toggle("hidden");
-        console.log("Verändere Ansicht");
     }
 });
