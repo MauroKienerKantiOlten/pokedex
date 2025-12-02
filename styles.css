@@ -53,7 +53,7 @@ body {
 
 #pokemon-cards, #pokemon-detail-view {
   opacity: 1;
-  max-height: 1000px; 
+  max-height: 1000vh; 
   overflow: hidden;
   transition: opacity 0.6s ease, max-height 0.6s ease;
 }
