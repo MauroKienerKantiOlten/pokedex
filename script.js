@@ -78,6 +78,7 @@ function createPokemonCard(pokemon){
 }
 
 
-
-
 // Event-Listeners
+title.addEventListener("click", function(){
+    console.log("Es wurde auf den Titel geklickt.");
+});
