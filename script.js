@@ -51,6 +51,7 @@ for (const pokemon of pokemons){
 function displaySinglePokemon(pokemon){
     pokemonCards.classList.toggle("hidden");
     pokemonDetailView.classList.toggle("hidden");
+    pokemonDetailView.innerHTML = "";
 
     const card = createPokemonCard(pokemon);
     pokemonDetailView.appendChild(card);
@@ -80,5 +81,9 @@ function createPokemonCard(pokemon){
 
 // Event-Listeners
 title.addEventListener("click", function(){
-    console.log("Es wurde auf den Titel geklickt.");
+    if(pokemonCards.classList.contains("hidden")){
+        pokemonCards.classList.toggle("hidden");
+        pokemonDetailView.classList.toggle("hidden");
+        console.log("Verändere Ansicht");
+    }
 });
