@@ -1,17 +1,5 @@
 // Globale Variablen
-const pokemonBilderQuelle = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
-const pokemons = [
-  { name: "Pikachu", type: "Elektro", image: `${pokemonBilderQuelle}25.png` },
-  { name: "Glumanda", type: "Feuer", image: `${pokemonBilderQuelle}4.png` },
-  { name: "Schiggy", type: "Wasser", image: `${pokemonBilderQuelle}7.png` },
-  { name: "Bisasam", type: "Pflanze", image: `${pokemonBilderQuelle}1.png` },
-  { name: "Evoli", type: "Normal", image: `${pokemonBilderQuelle}133.png` },
-  { name: "Nidoran", type: "Gift", image: `${pokemonBilderQuelle}32.png` },
-  { name: "Vulpix", type: "Feuer", image: `${pokemonBilderQuelle}37.png` },
-  { name: "Entoron", type: "Wasser", image: `${pokemonBilderQuelle}55.png` },
-  { name: "Traumato", type: "Psycho", image: `${pokemonBilderQuelle}97.png` },
-  { name: "Lavados", type: "Feuer", image: `${pokemonBilderQuelle}146.png` },
-];
+let numberOfPokemon = 0;
 
 
 // HTML-Elemente
@@ -36,17 +24,6 @@ pokemonDetailView.classList.add("container");
 pokemonDetailView.classList.add("hidden");
 document.body.appendChild(pokemonDetailView);
 
-for (const pokemon of pokemons){
-
-    const card = createPokemonCard(pokemon);
-
-    card.addEventListener("click", function(){
-        displaySinglePokemon(pokemon);
-    });
-
-    pokemonCards.appendChild(card);
-}
-
 // Funktionen
 function displaySinglePokemon(pokemon){
     pokemonCards.classList.toggle("hidden");
@@ -57,6 +34,7 @@ function displaySinglePokemon(pokemon){
     pokemonDetailView.appendChild(card);
 }   
 
+/** Creates a HTML Pokemon Card to display */
 function createPokemonCard(pokemon){
     const card = document.createElement("div");
     card.classList.add("card");
@@ -75,7 +53,56 @@ function createPokemonCard(pokemon){
     card.appendChild(image);
     card.appendChild(type); 
 
+    card.addEventListener("mouseover", function(){
+        image.src = pokemon.alternateImage;
+    });
+
+    card.addEventListener("mouseout", function(){
+        image.src = pokemon.image;
+    });
+
     return card;
+}
+
+
+async function displayPokemonList(){
+    const pokemonList = await getAllPokemon();
+
+    for(const pokemon of pokemonList){
+        const pokemonData = await getData(pokemon.url);
+        
+        pokemonData.image = pokemonData.sprites.other["official-artwork"]["front_default"];
+        pokemonData.alternateImage = pokemonData.sprites.other["official-artwork"]["front_shiny"];
+        pokemonData.type = pokemonData.types[0].type.name;
+
+        const card = createPokemonCard(pokemonData);
+
+        card.addEventListener("click", function(){
+            displaySinglePokemon(pokemonData);
+        });
+
+        pokemonCards.appendChild(card);
+    }
+}
+
+async function getAllPokemon(offset = 0, limit = 100) {
+    const pokemon = await getData(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
+    return pokemon.results;
+}
+
+async function getData(apiEndpoint) {
+
+    try {
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error.message);
+    }
 }
 
 
@@ -86,3 +113,5 @@ title.addEventListener("click", function(){
         pokemonDetailView.classList.toggle("hidden");
     }
 });
+
+displayPokemonList();

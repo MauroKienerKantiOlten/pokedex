@@ -37,7 +37,7 @@ body {
   width: 100%;
   text-align: center;
   background-color: rgba(253, 253, 253, 0.90);
-
+  text-transform: capitalize;
   transition: transform 0.3s ease, box-shadow 0.3s ease; 
 }
 
@@ -53,9 +53,8 @@ body {
 
 #pokemon-cards, #pokemon-detail-view {
   opacity: 1;
-  max-height: 1000vh; 
   overflow: hidden;
-  transition: opacity 0.6s ease, max-height 0.6s ease;
+  transition: opacity 0.8s ease;
 }
 
 #pokemon-cards.hidden, #pokemon-detail-view.hidden {
@@ -67,4 +66,6 @@ body {
   cursor: pointer;
 }
 
-
+.d-none {
+  display: none !important;
+}
