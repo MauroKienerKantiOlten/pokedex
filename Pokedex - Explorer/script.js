@@ -25,19 +25,51 @@ pokemonDetailView.classList.add("hidden");
 document.body.appendChild(pokemonDetailView);
 
 // Funktionen
+function createButtonForPokemonNavigation(pokemonId, previous = true){
+    const btn = document.createElement("button");
+    if(previous){
+        btn.innerText = "Previous";
+    } else {
+        btn.innerText = "Next";
+    }
+
+    btn.addEventListener("click", async function(){
+        const pokemonData = await getSinglePokemon(pokemonId);
+        displaySinglePokemon(pokemonData);
+    });
+
+    return btn;
+}
+
 function displaySinglePokemon(pokemon){
-    pokemonCards.classList.toggle("hidden");
-    pokemonDetailView.classList.toggle("hidden");
+    if(!pokemonCards.classList.contains("hidden")){
+        pokemonCards.classList.toggle("hidden");
+        pokemonDetailView.classList.toggle("hidden");
+    }
     pokemonDetailView.innerHTML = "";
 
     const card = createPokemonCard(pokemon);
     pokemonDetailView.appendChild(card);
+
+    let btnHolder = document.createElement("div");
+    btnHolder.id = "poke-navigators";
+    pokemonDetailView.appendChild(btnHolder);
+
+    if(pokemon.id > 1){
+        let prevBtn = createButtonForPokemonNavigation(pokemon.id - 1, true)
+        btnHolder.appendChild(prevBtn);
+    } 
+
+    let nextBtn = createButtonForPokemonNavigation(pokemon.id + 1, false)
+    btnHolder.appendChild(nextBtn);
+    
 }   
 
 /** Creates a HTML Pokemon Card to display */
 function createPokemonCard(pokemon){
     const card = document.createElement("div");
     card.classList.add("card");
+    card.id = pokemon.id; // Add Pokemon Id to card
 
     const title = document.createElement("h2");
     title.textContent = pokemon.name;   
@@ -64,17 +96,22 @@ function createPokemonCard(pokemon){
     return card;
 }
 
+async function getSinglePokemon(pokemonId){
+    let apiEndpoint = `https://pokeapi.co/api/v2/pokemon/${pokemonId}/`;
+    const pokemonData = await getData(apiEndpoint);
+
+    pokemonData.image = pokemonData.sprites.other["official-artwork"]["front_default"];
+    pokemonData.alternateImage = pokemonData.sprites.other["official-artwork"]["front_shiny"];
+    pokemonData.type = pokemonData.types[0].type.name;
+
+    return pokemonData;
+}
 
 async function displayPokemonList(){
     const pokemonList = await getAllPokemon();
 
     for(const pokemon of pokemonList){
-        const pokemonData = await getData(pokemon.url);
-        
-        pokemonData.image = pokemonData.sprites.other["official-artwork"]["front_default"];
-        pokemonData.alternateImage = pokemonData.sprites.other["official-artwork"]["front_shiny"];
-        pokemonData.type = pokemonData.types[0].type.name;
-
+        const pokemonData = await getSinglePokemon(pokemon.name);
         const card = createPokemonCard(pokemonData);
 
         card.addEventListener("click", function(){
